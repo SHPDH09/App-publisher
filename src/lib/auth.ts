@@ -17,13 +17,20 @@ export async function loginAdmin(adminId: string, password: string): Promise<Aut
       .eq('admin_id', adminId)
       .maybeSingle();
 
-    if (error || !admin) {
+    if (error) {
+      console.error('Database error:', error);
+      return null;
+    }
+
+    if (!admin) {
+      console.error('Admin not found:', adminId);
       return null;
     }
 
     const isValid = await bcrypt.compare(password, admin.password_hash);
 
     if (!isValid) {
+      console.error('Password mismatch for admin:', adminId);
       return null;
     }
 

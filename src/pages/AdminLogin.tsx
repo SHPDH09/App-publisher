@@ -20,15 +20,28 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
     setLoading(true);
 
     try {
+      if (!adminId.trim()) {
+        setError('Please enter your admin ID');
+        setLoading(false);
+        return;
+      }
+
+      if (!password) {
+        setError('Please enter your password');
+        setLoading(false);
+        return;
+      }
+
       const session = await loginAdmin(adminId, password);
 
       if (session) {
         setSession(session);
         onLoginSuccess();
       } else {
-        setError('Invalid admin ID or password');
+        setError('Invalid admin ID or password. Please check your credentials.');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
